@@ -270,7 +270,7 @@ class PymodbusUnit:
                 address, count=count, device_id=self._unit_id
             )
         )
-        return response.registers
+        return list(response.registers)
 
     @_map_errors
     async def read_input_registers(self, address: int, count: int) -> list[int]:
@@ -279,7 +279,7 @@ class PymodbusUnit:
                 address, count=count, device_id=self._unit_id
             )
         )
-        return response.registers
+        return list(response.registers)
 
     @_map_errors
     async def write_register(self, address: int, value: int) -> None:
@@ -300,7 +300,7 @@ class PymodbusUnit:
         response = _check(
             await self._client.read_coils(address, count=count, device_id=self._unit_id)
         )
-        return response.bits[:count]
+        return list(response.bits[:count])
 
     @_map_errors
     async def read_discrete_inputs(self, address: int, count: int) -> list[bool]:
@@ -309,7 +309,7 @@ class PymodbusUnit:
                 address, count=count, device_id=self._unit_id
             )
         )
-        return response.bits[:count]
+        return list(response.bits[:count])
 
     @_map_errors
     async def write_coil(self, address: int, value: bool) -> None:
@@ -368,7 +368,7 @@ class PymodbusUnit:
                 device_id=self._unit_id,
             )
         )
-        return response.registers
+        return list(response.registers)
 
     @_map_errors
     async def read_fifo_queue(self, address: int) -> list[int]:  # 0x18
@@ -388,7 +388,7 @@ class PymodbusUnit:
             ReadDeviceInformationResponse,
             _check(await self._client.read_device_information(device_id=self._unit_id)),
         )
-        return response.information
+        return {key: bytes(value) for key, value in response.information.items()}
 
     @_map_errors
     async def read_file_record(

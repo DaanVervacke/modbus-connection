@@ -164,6 +164,11 @@ async def test_get_comm_event_log(unit: tuple[str, ModbusUnit, Any]) -> None:
     assert await u.get_comm_event_log() == COMM_EVENT_LOG
 
 
+async def test_read_fifo_queue(unit: tuple[str, ModbusUnit, Any]) -> None:
+    _, u, _ = unit
+    assert await u.read_fifo_queue(0) == [HOLDING[0], HOLDING[1], HOLDING[2]]
+
+
 async def test_diagnostics_refused_raises(unit: tuple[str, ModbusUnit, Any]) -> None:
     """The server answers sub-function 0x02 with exception code 1."""
     _, u, _ = unit
