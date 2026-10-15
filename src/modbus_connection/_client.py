@@ -64,7 +64,10 @@ class ModbusTcpParams:
     """Connection parameters for a Modbus TCP link."""
 
     host: str
-    """Host name or IP address of the device, folded to lower case."""
+    """Host name or IP address of the device, folded to lower case.
+
+    An IPv6 scope identifier keeps its case.
+    """
 
     port: int = 502
     """TCP port."""
@@ -115,7 +118,10 @@ class ModbusUdpParams:
     """Connection parameters for a Modbus UDP link."""
 
     host: str
-    """Host name or IP address of the device, folded to lower case."""
+    """Host name or IP address of the device, folded to lower case.
+
+    An IPv6 scope identifier keeps its case.
+    """
 
     port: int = 502
     """UDP port."""
@@ -146,7 +152,10 @@ class ModbusTlsParams:
     """Connection parameters for a Modbus/TLS (Modbus Security) link."""
 
     host: str
-    """Host name or IP address of the device, folded to lower case."""
+    """Host name or IP address of the device, folded to lower case.
+
+    An IPv6 scope identifier keeps its case.
+    """
 
     port: int = 802
     """TLS port."""

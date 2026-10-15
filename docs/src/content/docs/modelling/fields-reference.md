@@ -131,7 +131,7 @@ Part of one register, constructed by [`bits()`](#field-helpers) and
 
 ```python
 PackedBitsField(address, start, width=1, *, writable=False, stride=0, unit=None)
-PackedBitField(address, index, *, writable=False, stride=0)
+PackedBitField(address, start, width=1, *, writable=False, stride=0, unit=None)
 ```
 
 Instance attributes add `start`, `width` and `mask` to `RegisterField`'s.
