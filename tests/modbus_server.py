@@ -28,6 +28,7 @@ from tmodbus.pdu import (
     ReadDeviceIdentificationPDU,
     ReadDeviceIdentificationResponse,
     ReadDiscreteInputsPDU,
+    ReadFifoQueuePDU,
     ReadHoldingRegistersPDU,
     ReadInputRegistersPDU,
     WriteMultipleCoilsPDU,
@@ -113,6 +114,10 @@ def build_router(store: Datastore) -> ModbusRequestRouter:
     @router.register(ReadDiscreteInputsPDU)
     async def read_discrete(uid: int, request: ReadDiscreteInputsPDU) -> list[bool]:
         return store.read(store.discrete_inputs, request, False)
+
+    @router.register(ReadFifoQueuePDU)
+    async def read_fifo(uid: int, request: ReadFifoQueuePDU) -> list[int]:
+        return [store.holding.get(request.address + i, 0) for i in range(3)]
 
     @router.register(WriteSingleRegisterPDU)
     async def write_register(uid: int, request: WriteSingleRegisterPDU) -> int:

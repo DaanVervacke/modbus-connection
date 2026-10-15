@@ -142,7 +142,7 @@ also works as a dictionary key for grouping shared connections:
 | Class | Endpoint | Excluded settings |
 | --- | --- | --- |
 | `ModbusTcpParams` | `("tcp", host, port)` | none |
-| `ModbusTcpParams`, deprecated `rtu` or `ascii` framing | `("serial", f"socket://{host}:{port}")` | none |
+| `ModbusTcpParams`, deprecated `rtu` or `ascii` framing | `("serial", f"socket://{host}:{port}")`, an IPv6 host bracketed | `framer` |
 | `ModbusUdpParams` | `("udp", host, port)` | `framer` |
 | `ModbusTlsParams` | `("tcp", host, port)` | all TLS options |
 | `ModbusSerialParams` | `("serial", device)` | `baudrate`, `bytesize`, `parity`, `stopbits`, `framer` |
@@ -158,7 +158,8 @@ gives for it. A gateway answering native Modbus TCP at that address is a
 different service, and keeps the `"tcp"` endpoint.
 
 A host is folded to lower case on construction, since DNS names and IPv6 hex
-digits are case-insensitive. The serial device path is compared verbatim.
+digits are case-insensitive. An IPv6 scope identifier keeps its case. The
+serial device path is compared verbatim.
 Aliases of the same port (a `/dev/serial/by-id` symlink versus
 `/dev/ttyUSB0`) are not resolved.
 
