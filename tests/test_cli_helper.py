@@ -196,6 +196,16 @@ async def test_connect_from_args_dispatches_by_transport(
     await connect_from_args(_parse_any(["1.2.3.4", "--framer", "ascii"]))
     assert calls["name"].endswith("tmodbus.connect_tcp")
 
+    await connect_from_args(_parse_any(["1.2.3.4", "--framer", "socket"]))
+    assert calls["name"].endswith("tmodbus.connect_tcp")
+    assert "framer" not in calls["kwargs"]
+
+    await connect_from_args(
+        _parse_any(["1.2.3.4", "--transport", "udp", "--framer", "socket"])
+    )
+    assert calls["name"].endswith("tmodbus.connect_udp")
+    assert "framer" not in calls["kwargs"]
+
 
 def test_unset_port_and_framer_left_to_backend() -> None:
     # Left unset so the backend default applies rather than being forced here.
