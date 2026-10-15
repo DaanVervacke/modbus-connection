@@ -7,6 +7,7 @@ server is pymodbus's either way — tmodbus has no ASCII-over-TCP server.
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 from collections.abc import AsyncIterator
 
@@ -16,6 +17,7 @@ from pymodbus.server import ModbusTcpServer
 from pymodbus.simulator import DataType, SimData, SimDevice
 
 from modbus_connection import ModbusTcpParams
+from modbus_connection.cli_helper import add_connection_args, connect_from_args
 from modbus_connection.pymodbus import ModbusConnection
 from modbus_connection.tmodbus import ModbusConnection as TmodbusConnection
 
@@ -76,5 +78,19 @@ async def test_tmodbus_ascii_over_tcp_writes(ascii_tcp_server: tuple[str, int]) 
         unit = conn.for_unit(UNIT_ID)
         await unit.write_register(1, 4242)
         assert await unit.read_holding_registers(1, 1) == [4242]
+    finally:
+        await conn.close()
+
+
+async def test_connect_from_args_reaches_an_ascii_server(
+    ascii_tcp_server: tuple[str, int],
+) -> None:
+    host, port = ascii_tcp_server
+    parser = argparse.ArgumentParser()
+    add_connection_args(parser, connections=(("tcp", "ascii"),))
+    args = parser.parse_args([host, "--port", str(port)])
+    conn = await connect_from_args(args)
+    try:
+        assert await conn.for_unit(UNIT_ID).read_holding_registers(0, 1) == [5579]
     finally:
         await conn.close()
