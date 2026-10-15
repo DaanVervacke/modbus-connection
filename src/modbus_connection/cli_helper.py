@@ -80,9 +80,9 @@ def _load_backend(transport: str, framer: str | None) -> ModuleType:
     Raises ``ModbusError`` if no installed backend supports the request.
     """
     tmodbus = _import_backend("tmodbus")
-    pymodbus = _import_backend("pymodbus")
     if tmodbus is not None and _carries(tmodbus, transport, framer):
         return tmodbus
+    pymodbus = _import_backend("pymodbus")
     if pymodbus is not None and _carries(pymodbus, transport, framer):
         return pymodbus
 

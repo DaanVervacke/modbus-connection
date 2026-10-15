@@ -9,7 +9,7 @@ a new device library: it checks a physical controller without any application
 around it.
 
 ```text
-$ python query.py 192.168.1.50 --unit 246 --framer rtu
+$ python query.py 192.168.1.50 --unit 246
 
 Sensors
 -------
@@ -31,7 +31,7 @@ parsing, connection setup, read counting and value printing every time:
 | Building block | Purpose |
 | --- | --- |
 | `add_connection_args(parser, connections=…)` | Add the connection arguments (target, transport, framer, port, timeout, serial/TLS options) to an `argparse` parser. |
-| `connect_from_args(args, *, message_spacing=None)` | Open the connection those arguments describe (over whichever backend is installed). |
+| `connect_from_args(args, *, message_spacing=0.0)` | Open the connection those arguments describe (over whichever backend is installed). |
 | `CountingUnit` | Wrap a `ModbusUnit` to count the block reads an update performs. |
 | `print_component(component, *, title=None, file=None, indent="")` | Print every field on a component, and each repeating group's instances, by reflection. |
 | `field_rows(component)` | The `(name, value)` rows behind `print_component`, if you want to format them yourself. |
@@ -91,8 +91,9 @@ raise SystemExit(asyncio.run(main()))
 Run it against a device. `add_connection_args` provides a full connection CLI:
 
 ```bash
-python query.py 192.168.1.50 --unit 246 --framer rtu
+python query.py 192.168.1.50 --unit 246
 python query.py /dev/ttyUSB0 --transport serial --unit 246 --baudrate 19200
+python query.py socket://192.168.1.50:8899 --transport serial --unit 246
 python query.py --help          # works without a backend installed
 ```
 
@@ -156,8 +157,8 @@ what a device on RS-485 needs. The serial target reaches a local adapter or a
 and the TCP one a Modbus gateway:
 
 ```bash
-python query.py /dev/ttyUSB0 --unit 246 --baudrate 19200
-python query.py socket://192.168.1.50:8899 --unit 246 --baudrate 19200
+python query.py /dev/ttyUSB0 --transport serial --unit 246 --baudrate 19200
+python query.py socket://192.168.1.50:8899 --transport serial --unit 246 --baudrate 19200
 python query.py 192.168.1.50 --transport tcp --unit 246
 ```
 

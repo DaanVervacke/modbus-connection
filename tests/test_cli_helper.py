@@ -13,6 +13,7 @@ import io
 import sys
 from enum import IntEnum, IntFlag
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 
@@ -249,6 +250,28 @@ def test_load_backend_prefers_tmodbus() -> None:
     # Both backends are installed in dev; tmodbus wins.
     assert _load_backend("tcp", None) is tmodbus_backend
     assert _load_backend("tcp", "ascii") is tmodbus_backend
+
+
+@pytest.mark.parametrize(
+    ("transport", "framer"),
+    [
+        ("tcp", None),
+        ("tcp", "ascii"),
+        ("udp", "socket"),
+        ("serial", "rtu"),
+        ("tls", None),
+    ],
+)
+def test_load_backend_does_not_import_unused_pymodbus(
+    transport: str,
+    framer: str | None,
+) -> None:
+    with patch(
+        "modbus_connection.cli_helper.importlib.import_module",
+        side_effect=[tmodbus_backend, AssertionError("pymodbus must stay unloaded")],
+    ) as import_module:
+        assert _load_backend(transport, framer) is tmodbus_backend
+    import_module.assert_called_once_with(".tmodbus", "modbus_connection")
 
 
 def test_load_backend_falls_back_to_pymodbus(monkeypatch: pytest.MonkeyPatch) -> None:

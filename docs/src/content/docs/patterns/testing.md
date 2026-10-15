@@ -53,6 +53,9 @@ async def test_decodes_a_captured_device(mock_modbus_unit):
     assert meter.voltage == 230.1
 ```
 
+A JSON dump carries its addresses as strings. `load_raw()` accepts them, so
+the query helper's `--raw` output loads without translation.
+
 ## Testing a component
 
 The mock is a real `ModbusUnit`, so you test a `Component` exactly as
@@ -258,7 +261,7 @@ configuration surface:
 | `fail_read(address, error, *, register_type="holding")` | Arm the exception reads covering the address raise (`"holding"`, `"input"`, `"coil"`, or `"discrete"`); `None` clears it. |
 | `fail_requests(error)` | Arm the exception [every read and write](#simulating-a-device-that-answers-nothing) on this unit raises; `None` clears it. |
 | `set_response(method, value)` | Arm a [canned response](#canned-responses-for-the-other-operations) for a non-store operation. |
-| `load_raw(raw)` | Load an [`async_read_raw()` snapshot](#replaying-a-raw-snapshot) into the stores; raises `ValueError` for an unknown space. |
+| `load_raw(raw)` | Load an [`async_read_raw()` snapshot](#replaying-a-raw-snapshot) into the stores; raises `ValueError` for an unknown space or an address that is not a number. |
 | `set_message_spacing(seconds)` | Records the interval on the `message_spacing` attribute for assertions; raises `ValueError` if negative. |
 | `require_timeout(seconds)` | Records the requirement on the `required_timeout` attribute, `None` where nothing is required; raises `ValueError` if negative. |
 | `require_connect_delay(seconds)` | Records the requirement on the `required_connect_delay` attribute, `None` where nothing is required; raises `ValueError` if negative. |

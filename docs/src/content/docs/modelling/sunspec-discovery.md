@@ -114,6 +114,13 @@ read instead of adding a pass. A device that reports different counts has a
 different model length, and `SunSpecComponent` rejects that header on the first
 read.
 
+A block that repeats to fill the model length and names no count point is
+emitted as a
+[`model_length_group`](/modbus-connection/modelling/components-reference/#model_length_groupcomponent_class--start-stride).
+The count binds from the scanned length when the component is constructed, so
+one class serves devices whose models differ in length. A nested block of that
+shape comes out as a comment to place by hand.
+
 ## Writing a curve
 
 A curve is a repeated block of writable points, and a device expects it whole.
