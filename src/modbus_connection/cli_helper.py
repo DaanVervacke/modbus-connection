@@ -37,7 +37,8 @@ __all__ = [
 
 # The framings each transport accepts. A framer of ``None`` means "no framing
 # choice", which is the backend default (and the only option for TLS).
-_FRAMERS = ("socket", "rtu", "ascii")
+_NATIVE_FRAMING = "socket"
+_FRAMERS = (_NATIVE_FRAMING, "rtu", "ascii")
 _TRANSPORT_FRAMERS: dict[str, tuple[str, ...]] = {
     "tcp": _FRAMERS,
     "udp": _FRAMERS,
@@ -280,7 +281,7 @@ async def connect_from_args(
     return await connect(
         args.target,
         **({"port": port} if port is not None else {}),
-        **({"framer": framer} if framer else {}),
+        **({"framer": framer} if framer and framer != _NATIVE_FRAMING else {}),
         **common,
     )
 
