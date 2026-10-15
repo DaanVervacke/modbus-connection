@@ -268,6 +268,31 @@ def test_load_backend_prefers_tmodbus_for_udp() -> None:
     assert _load_backend("udp", "socket") is tmodbus_backend
 
 
+def test_load_backend_follows_the_backend_capability_map(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    narrowed = dict(tmodbus_backend.SUPPORTED_FRAMINGS, tcp=("socket",))
+    monkeypatch.setattr(tmodbus_backend, "SUPPORTED_FRAMINGS", narrowed)
+    assert _load_backend("tcp", "rtu") is pymodbus_backend
+
+
+def test_the_backends_state_their_framings() -> None:
+    assert tmodbus_backend.SUPPORTED_FRAMINGS == {
+        "tcp": ("socket", "rtu", "ascii"),
+        "udp": ("socket",),
+        "tls": ("socket",),
+        "serial": ("rtu", "ascii"),
+    }
+    assert pymodbus_backend.SUPPORTED_FRAMINGS == {
+        "tcp": ("socket", "rtu", "ascii"),
+        "udp": ("socket", "rtu", "ascii"),
+        "tls": ("socket",),
+        "serial": ("rtu", "ascii"),
+    }
+    assert _load_backend("udp", "ascii") is pymodbus_backend
+    assert _load_backend("serial", "ascii") is tmodbus_backend
+
+
 def test_load_backend_errors_when_none_installed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
